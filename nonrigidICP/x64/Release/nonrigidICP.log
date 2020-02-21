@@ -1,0 +1,8 @@
+﻿  nodegraph.cpp
+c1xx : warning C4199: C++/CLI、C++/CX 或 OpenMP 不支持两阶段名称查找；请使用 /Zc:twoPhase-
+  正在生成代码
+  2079 of 2080 functions (100.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  nonrigidICP.vcxproj -> E:\project\nonrigidICP\x64\Release\nonrigidICP.exe
