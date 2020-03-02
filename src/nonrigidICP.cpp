@@ -27,6 +27,9 @@ void NonrigidICP::SetWeight(const Eigen::VectorXf& wDeform, const float& wSmth, 
 {
 	if (wDeform.size() == 0)
 		m_wDeform = Eigen::VectorXf::Ones(m_srcModel->vertices.cols());
+	else
+		m_wDeform = wDeform;
+
 	m_wSmth = wSmth;
 	m_wRegular = wRegular;
 }
@@ -38,6 +41,8 @@ void NonrigidICP::FindCorr()
 	m_corr.setConstant(-1);
 #pragma omp parallel for
 	for (int sIdx = 0; sIdx < m_iterModel.vertices.cols(); sIdx++) {
+		if (m_wDeform[sIdx] < FLT_EPSILON)
+			continue;
 		const Eigen::Vector3f v = m_iterModel.vertices.col(sIdx);
 		const std::vector<std::pair<float, size_t>> nbors = m_tarTree->KNNSearch(v, 4);
 		for (const auto& nbor : nbors) {
@@ -186,8 +191,10 @@ void NonrigidICP::Solve(const int& maxIterTime, const float& updateThresh, const
 		UpdateWarpField();
 		UpdateModel();
 
-		if(debugPath != "")
-			m_iterModel.Save(debugPath + "/" + std::to_string(iterTime) + ".obj");
+		if (debugPath != "") {
+			static int cnt = 0;
+			m_iterModel.Save(debugPath + "/" + std::to_string(cnt++) + ".obj");
+		}
 	}
 }
 

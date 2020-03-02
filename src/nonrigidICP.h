@@ -19,7 +19,7 @@ public:
 	void SetWeight(const Eigen::VectorXf& wDeform, const float& wSmth, const float& wRegular);
 	void SetModel(std::shared_ptr<const Model> srcModel, std::shared_ptr<const Model> tarModel);
 	void SetNodeGraph(std::shared_ptr<const NodeGraph> nodeGraph);
-
+	void SetCorrParam(const float& _maxDist, const float& _maxAngle) { m_maxDist = _maxDist; m_maxAngle = _maxAngle; }
 	void Solve(const int& maxIterTime = 10, const float& updateThresh = 1e-5f, const std::string& debugPath="");
 	
 protected:
@@ -31,9 +31,9 @@ protected:
 	Eigen::VectorXi m_corr;
 	Eigen::MatrixXf m_deltaTwist;
 	Eigen::VectorXf m_wDeform;
-	float m_wSmth = 0.1f;
+	float m_wSmth = .1f;
 	float m_wRegular = 1e-3f; 
-	float m_maxDist = 0.1f;
+	float m_maxDist = 0.2f;
 	float m_maxAngle = float(EIGEN_PI) / 4;
 
 	void FindCorr();

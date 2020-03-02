@@ -99,7 +99,7 @@ Eigen::VectorXf NodeGraphGenerator::Dijkstra(const int& start, const Eigen::Matr
 }
 
 
-void NodeGraphGenerator::CalcGeodesic(const Model& model)
+void NodeGraphGenerator::CalcGeodesic()
 {
 	const int n = (int)model.vertices.cols();
 	geodesic.clear();
@@ -206,11 +206,13 @@ void NodeGraphGenerator::GenNodeNet()
 				auto iter = geodesic[nodeIdx[ni]].find(nodeIdx[nj]);
 				if (iter != geodesic[nodeIdx[ni]].end() && iter->second != FLT_MAX)
 					dist.emplace_back(std::make_pair(iter->second, nj));
+				 //dist.emplace_back(std::make_pair(
+					//(model.vertices.col(nodeIdx[ni])
+					//	- model.vertices.col(nodeIdx[nj])).norm(), nj));
 			}
 
 		if (dist.size() < netDegree)
 			std::cerr << "dist size: " << dist.size() << " geodesic is not enough, should turn up cut rate" << std::endl;
-
 
 		std::sort(dist.begin(), dist.end());
 		for (int i = 0; i < dist.size() && i < netDegree; i++)
@@ -219,9 +221,10 @@ void NodeGraphGenerator::GenNodeNet()
 }
 
 
-void NodeGraphGenerator::Generate(const Model& model)
+void NodeGraphGenerator::Generate(const Model& _model)
 {
-	CalcGeodesic(model);
+	model = _model;
+	CalcGeodesic();
 	SampleNode();
 	GenKnn();
 	GenNodeNet();
@@ -265,7 +268,7 @@ void NodeGraphGenerator::SaveGeodesic(const std::string& filename) const
 }
 
 
-void NodeGraphGenerator::VisualizeNodeNet(const Model& model, const std::string& filename) const
+void NodeGraphGenerator::VisualizeNodeNet(const std::string& filename) const
 {
 	std::ofstream fs(filename);
 	for (int i = 0; i < nodeIdx.size(); i++)
@@ -280,7 +283,7 @@ void NodeGraphGenerator::VisualizeNodeNet(const Model& model, const std::string&
 }
 
 
-void NodeGraphGenerator::VisualizeKnn(const Model& model, const std::string& filename) const
+void NodeGraphGenerator::VisualizeKnn(const std::string& filename) const
 {
 	std::ofstream fs(filename);
 	for (int i = 0; i < knn.cols(); i++)
